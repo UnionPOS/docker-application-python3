@@ -17,7 +17,6 @@ Dockerfile for UNION POS Python 3 application containers.
 
 ## Quick Start
 
-## Quick Start
 
 Here's how to get started...
 
