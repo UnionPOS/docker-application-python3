@@ -1,5 +1,4 @@
-
-FROM unionpos/python:3.6.8
+FROM unionpos/python:3.8.10
 
 ENV COUCHBASE_PKG "couchbase-release-1.0-2-amd64.deb"
 ENV MYSQL_PKG "mysql-apt-config_0.8.9-1_all.deb"

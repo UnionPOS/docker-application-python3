@@ -1,6 +1,6 @@
 export DOCKER_ORG ?= unionpos
 export DOCKER_IMAGE ?= $(DOCKER_ORG)/application
-export DOCKER_TAG ?= 20200210
+export DOCKER_TAG ?= 20230111
 export DOCKER_IMAGE_NAME ?= $(DOCKER_IMAGE):$(DOCKER_TAG)
 export DOCKER_BUILD_FLAGS =
 
