@@ -25,7 +25,9 @@ RUN set -ex \
     && apt-key update && apt-get update && apt-get install -y --no-install-recommends --allow-unauthenticated \
     libxml2-dev libxslt-dev libmysqlclient-dev mysql-client \
     # nodejs
-    && apt-get update && apt-get install -y --no-install-recommends nodejs \
+    && curl -fsSL https://deb.nodesource.com/setup_16.x | bash - \
+    && apt-get install -y nodejs \
+    && node -v \
     # pwgen
     && apt-get update && apt-get install -y --no-install-recommends pwgen \
     && ln -s /usr/bin/pwgen /bin/pwgen \
@@ -54,4 +56,3 @@ EXPOSE 3000
 COPY scripts/docker-entrypoint.sh /usr/local/bin/
 
 ENTRYPOINT ["docker-entrypoint.sh"]
-
