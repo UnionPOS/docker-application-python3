@@ -1,6 +1,6 @@
-FROM unionpos/python:3.8.11
+FROM unionpos/python:3.8.11b
 
-ENV COUCHBASE_PKG "couchbase-release-1.0-2-amd64.deb"
+ENV COUCHBASE_PKG "couchbase-server-enterprise_7.0.2-ubuntu18.04_amd64.deb"
 ENV MYSQL_PKG "mysql-apt-config_0.8.9-1_all.deb"
 ENV REDIS_PKG "redis-stable.tar.gz"
 
@@ -10,14 +10,22 @@ COPY --from=unionpos/gosu:1.11 /gosu /usr/local/bin/
 RUN set -ex \
     && buildDeps=' \
     lsb-release \
+    gnupg \
+    gpg-agent \
     wget \
+    libjemalloc1 \
+    libjemalloc-dev \
     ' \
     && apt-get update \
     && apt-get install -y --no-install-recommends build-essential $buildDeps \
+    # Ubuntu key
+    && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 467B942D3A79BD29 \
     # couchbase dev
-    && wget -O $COUCHBASE_PKG http://packages.couchbase.com/releases/couchbase-release/$COUCHBASE_PKG \
+    && wget -O $COUCHBASE_PKG http://packages.couchbase.com/releases/7.0.2/$COUCHBASE_PKG \
     && dpkg -i $COUCHBASE_PKG && rm $COUCHBASE_PKG \
-    && apt-key update && apt-get update && apt-get install -y --no-install-recommends libcouchbase-dev \
+    && wget -O - http://packages.couchbase.com/ubuntu/couchbase.key | apt-key add - \
+    && echo "deb http://packages.couchbase.com/ubuntu bionic bionic/main" | tee /etc/apt/sources.list.d/couchbase.list \
+    && apt-get update && apt-get install -y --no-install-recommends libcouchbase-dev \
     # mysql dev
     && wget -O $MYSQL_PKG http://repo.mysql.com/$MYSQL_PKG \
     && dpkg -i $MYSQL_PKG && rm $MYSQL_PKG \
@@ -35,12 +43,7 @@ RUN set -ex \
     && apt-get update && apt-get install -y --no-install-recommends python-dev curl \
     && pip install virtualenv \
     # redis cli
-    && wget -O $REDIS_PKG http://download.redis.io/$REDIS_PKG \
-    && tar xvzf $REDIS_PKG -C /tmp \
-    && cd /tmp/redis-stable && make && chmod 755 src/redis-cli \
-    && cp src/redis-cli /usr/local/bin/ \
-    && rm -rf /tmp/redis-stable \
-    && cd / \
+    && apt-get update && apt-get install -y --no-install-recommends redis-tools \
     # cleanup
     && apt-get purge -y --auto-remove $buildDeps \
     && rm -rf /var/lib/apt/lists/*
