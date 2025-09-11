@@ -30,6 +30,9 @@ RUN set -ex \
     && apt-get update && apt --fix-broken install -y \
     && apt-get install -y --no-install-recommends \
     libxml2-dev libxslt1-dev libmysqlclient-dev \
+    # Install additional MySQL development libraries and build tools
+    && apt-get install -y --no-install-recommends pkg-config \
+    && apt-get install -y --no-install-recommends default-libmysqlclient-dev \
     # Install Node.js
     && curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
     && apt-get install -y nodejs \
